@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://jtk7ssumhk3u"]
+
+[ext_resource type="Script" uid="uid://2ygmphpr1xvo" path="res://menu/menu.gd" id="1_j0t7f"]
+
+[node name="Pockade" type="Control" unique_id=477202749]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_j0t7f")
+
+[node name="Label" type="Label" parent="." unique_id=390152982]
+layout_mode = 0
+offset_left = 255.0
+offset_top = 85.0
+offset_right = 295.0
+offset_bottom = 152.0
+theme_override_font_sizes/font_size = 48
+text = "Welcome to Pockade"
+
+[node name="Button" type="Button" parent="." unique_id=379035078]
+layout_mode = 0
+offset_left = 144.0
+offset_top = 215.0
+offset_right = 204.0
+offset_bottom = 246.0
+text = "SNAKE"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
