@@ -20,3 +20,11 @@ offset_right = 351.0
 offset_bottom = 301.0
 theme_override_font_sizes/font_size = 48
 text = "GAME OVER"
+
+[node name="RestartLabel" type="Label" parent="." unique_id=1474816827]
+visible = false
+offset_left = 925.0
+offset_top = 193.0
+offset_right = 965.0
+offset_bottom = 216.0
+text = "Press 'R' to play again."

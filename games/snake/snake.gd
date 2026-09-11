@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var score_label = $ScoreLabel
 @onready var game_over_label = $GameOverLabel
+@onready var restart_label = $RestartLabel
 var game_over = false
 var score = 0
 var board_width = 40
@@ -92,6 +93,10 @@ func move_snake():
 	
 func _input(event):
 	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_R and game_over:
+			get_tree().reload_current_scene()
+			return
+		
 		if event.keycode == KEY_W:
 			change_direction(Vector2i.UP)
 		elif event.keycode == KEY_S:
@@ -114,3 +119,4 @@ func spawn_food():
 func end_game():
 	game_over = true
 	game_over_label.visible = true
+	restart_label.visible = true;
