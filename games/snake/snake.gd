@@ -1,6 +1,9 @@
 extends Node2D
 
+@onready var score_label = $ScoreLabel
+@onready var game_over_label = $GameOverLabel
 var game_over = false
+var score = 0
 var board_width = 40
 var board_height = 30
 var cell_size = 20
@@ -42,6 +45,7 @@ func _draw():
 		
 func _ready():
 	spawn_food()
+	score_label.text = "Score: " + str(score)
 	queue_redraw()
 	
 func _process(delta):
@@ -58,16 +62,16 @@ func move_snake():
 
 	# Check if the snake hit a wall
 	if new_head.x < 0 or new_head.x >= board_width:
-		game_over = true
+		end_game()
 		return
 
 	if new_head.y < 0 or new_head.y >= board_height:
-		game_over = true
+		end_game()
 		return
 
 	# Check if the snake hit itself
 	if snake.has(new_head):
-		game_over = true
+		end_game()
 		return
 
 	var ate_food = new_head == food
@@ -82,6 +86,8 @@ func move_snake():
 	# Grow if we ate food
 	if ate_food:
 		snake.append(snake[-1])
+		score += 1
+		score_label.text = "Score: " + str(score)
 		spawn_food()
 	
 func _input(event):
@@ -104,3 +110,7 @@ func spawn_food():
 		randi_range(0,39),
 		randi_range(0,29)
 	)
+	
+func end_game():
+	game_over = true
+	game_over_label.visible = true
