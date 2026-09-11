@@ -1,7 +1,11 @@
 extends Node2D
 
+var game_over = false
+var board_width = 40
+var board_height = 30
 var cell_size = 20
-var snake_size = 16 # smaller than cells so that the head, body, and tail appear with gaps
+var board_offset = Vector2(10, 10)
+var item_size = 16 # smaller than cells so that the head, body, and tail appear with gaps
 var snake = [
 	Vector2i(20, 15),
 	Vector2i(19, 15),
@@ -13,18 +17,28 @@ var move_timer = 0.0
 var move_delay = 0.15 # slow moving snake to start
 
 func _draw():
+	draw_rect(
+		Rect2(
+			board_offset - Vector2(2.5, 2.5),
+			Vector2(board_width, board_height) * cell_size + Vector2(5, 5)
+		),
+		Color(0.2, 0.8, 1.0),
+		false,
+		5
+	)
+	
 	for segment in snake:
-		var pixel_position = Vector2(segment) * cell_size
+		var pixel_position = board_offset + Vector2(segment) * cell_size
 
 		draw_rect(
-			Rect2(pixel_position, Vector2(snake_size, snake_size)),
+			Rect2(pixel_position, Vector2(item_size, item_size)),
 			Color.GREEN
 		)
 		
-		draw_rect(
-			Rect2(Vector2(food) * cell_size, Vector2(16, 16)),
-			Color.RED
-		)
+	draw_rect(
+		Rect2(board_offset + Vector2(food) * cell_size, Vector2(item_size, item_size)),
+		Color.RED
+	)
 		
 func _ready():
 	spawn_food()
@@ -35,16 +49,37 @@ func _process(delta):
 
 	if move_timer >= move_delay:
 		move_timer = 0
-		move_snake()
+		if not game_over:
+			move_snake()
 		queue_redraw()
 		
 func move_snake():
-	var ate_food = snake[0] == food
+	var new_head = snake[0] + direction
+
+	# Check if the snake hit a wall
+	if new_head.x < 0 or new_head.x >= board_width:
+		game_over = true
+		return
+
+	if new_head.y < 0 or new_head.y >= board_height:
+		game_over = true
+		return
+
+	# Check if the snake hit itself
+	if snake.has(new_head):
+		game_over = true
+		return
+
+	var ate_food = new_head == food
+
+	# Move the body
 	for i in range(snake.size() - 1, 0, -1):
 		snake[i] = snake[i - 1]
 
-	snake[0] += direction
-	
+	# Move the head
+	snake[0] = new_head
+
+	# Grow if we ate food
 	if ate_food:
 		snake.append(snake[-1])
 		spawn_food()
